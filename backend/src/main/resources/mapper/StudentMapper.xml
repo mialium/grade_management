@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grade.management.mapper.StudentMapper">
+
+    <select id="findByCourseName" resultType="com.grade.management.entity.Student">
+        SELECT 
+            s.id as id,
+            s.user_name as userName,
+            s.user_name as realName,
+            s.student_number as studentNumber,
+            s.class_name as className,
+            s.major as major,
+            s.enrollment_year as enrollmentYear,
+            s.gender as gender,
+            s.email as email,
+            s.phone as phone,
+            s.address as address,
+            s.birth_date as birthDate,
+            s.nationality as nationality,
+            s.political_status as politicalStatus,
+            s.id_card_number as idCardNumber,
+            s.created_at as createdAt,
+            s.updated_at as updatedAt
+        FROM students s
+        INNER JOIN course_student cs ON s.user_name = cs.student_name
+        WHERE cs.course_name = #{courseName}
+        ORDER BY s.student_number
+    </select>
+
+    <select id="findAll" resultType="com.grade.management.entity.Student">
+        SELECT 
+            s.id as id,
+            s.user_name as userName,
+            s.user_name as realName,
+            s.student_number as studentNumber,
+            s.class_name as className,
+            s.major as major,
+            s.enrollment_year as enrollmentYear,
+            s.gender as gender,
+            s.email as email,
+            s.phone as phone,
+            s.address as address,
+            s.birth_date as birthDate,
+            s.nationality as nationality,
+            s.political_status as politicalStatus,
+            s.id_card_number as idCardNumber,
+            s.created_at as createdAt,
+            s.updated_at as updatedAt
+        FROM students s
+        ORDER BY s.student_number
+    </select>
+
+    <select id="findById" resultType="com.grade.management.entity.Student">
+        SELECT 
+            s.id as id,
+            s.user_name as userName,
+            s.user_name as realName,
+            s.student_number as studentNumber,
+            s.class_name as className,
+            s.major as major,
+            s.enrollment_year as enrollmentYear,
+            s.gender as gender,
+            s.email as email,
+            s.phone as phone,
+            s.address as address,
+            s.birth_date as birthDate,
+            s.nationality as nationality,
+            s.political_status as politicalStatus,
+            s.id_card_number as idCardNumber,
+            s.created_at as createdAt,
+            s.updated_at as updatedAt
+        FROM students s
+        WHERE s.id = #{id}
+    </select>
+
+    <select id="findByUsername" resultType="com.grade.management.entity.Student">
+        SELECT 
+            s.id as id,
+            s.user_name as userName,
+            s.user_name as realName,
+            s.student_number as studentNumber,
+            s.class_name as className,
+            s.major as major,
+            s.enrollment_year as enrollmentYear,
+            s.gender as gender,
+            s.email as email,
+            s.phone as phone,
+            s.address as address,
+            s.birth_date as birthDate,
+            s.nationality as nationality,
+            s.political_status as politicalStatus,
+            s.id_card_number as idCardNumber,
+            s.created_at as createdAt,
+            s.updated_at as updatedAt
+        FROM students s
+        WHERE s.user_name = #{username}
+    </select>
+
+    <insert id="insert" parameterType="com.grade.management.entity.Student" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO students (user_name, student_number, class_name, major, enrollment_year, gender, email, phone, address, birth_date, nationality, political_status, id_card_number)
+        VALUES (#{userName}, #{studentNumber}, #{className}, #{major}, #{enrollmentYear}, #{gender}, #{email}, #{phone}, #{address}, #{birthDate}, #{nationality}, #{politicalStatus}, #{idCardNumber})
+    </insert>
+
+    <update id="update" parameterType="com.grade.management.entity.Student">
+        UPDATE students SET
+            user_name = #{userName},
+            student_number = #{studentNumber},
+            class_name = #{className},
+            major = #{major},
+            enrollment_year = #{enrollmentYear},
+            gender = #{gender},
+            email = #{email},
+            phone = #{phone},
+            address = #{address},
+            birth_date = #{birthDate},
+            nationality = #{nationality},
+            political_status = #{politicalStatus},
+            id_card_number = #{idCardNumber},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM students WHERE id = #{id}
+    </delete>
+
+</mapper>

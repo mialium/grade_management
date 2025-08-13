@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grade.management.mapper.CourseMapper">
+    <resultMap id="BaseResultMap" type="com.grade.management.entity.Course">
+        <id column="id" property="id" />
+        <result column="course_name" property="courseName" />
+        <result column="course_code" property="courseCode" />
+        <result column="credit" property="credit" />
+        <result column="teacher_name" property="teacherName" />
+        <result column="course_type" property="courseType" />
+        <result column="course_hours" property="courseHours" />
+        <result column="course_description" property="courseDescription" />
+        <result column="department" property="department" />
+        <result column="classroom" property="classroom" />
+        <result column="max_students" property="maxStudents" />
+        <result column="current_students" property="currentStudents" />
+        <result column="is_active" property="isActive" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+    
+    <select id="findByTeacherName" resultMap="BaseResultMap">
+        SELECT * FROM courses WHERE teacher_name = #{teacherName}
+    </select>
+    
+    <select id="findAll" resultMap="BaseResultMap">
+        SELECT * FROM courses
+    </select>
+    
+    <select id="findById" resultMap="BaseResultMap">
+        SELECT * FROM courses WHERE id = #{id}
+    </select>
+    
+    <insert id="insert" parameterType="com.grade.management.entity.Course" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO courses (course_name, course_code, credit, teacher_name, course_type, course_hours, course_description, department, classroom, max_students, current_students, is_active)
+        VALUES (#{courseName}, #{courseCode}, #{credit}, #{teacherName}, #{courseType}, #{courseHours}, #{courseDescription}, #{department}, #{classroom}, #{maxStudents}, #{currentStudents}, #{isActive})
+    </insert>
+    
+    <update id="update" parameterType="com.grade.management.entity.Course">
+        UPDATE courses 
+        SET course_name = #{courseName}, 
+            course_code = #{courseCode}, 
+            credit = #{credit}, 
+            teacher_name = #{teacherName},
+            course_type = #{courseType},
+            course_hours = #{courseHours},
+            course_description = #{courseDescription},
+            department = #{department},
+            classroom = #{classroom},
+            max_students = #{maxStudents},
+            current_students = #{currentStudents},
+            is_active = #{isActive},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM courses WHERE id = #{id}
+    </delete>
+</mapper>

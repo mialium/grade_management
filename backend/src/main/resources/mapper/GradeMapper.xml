@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grade.management.mapper.GradeMapper">
+    <resultMap id="BaseResultMap" type="com.grade.management.entity.Grade">
+        <id column="id" property="id" />
+        <result column="student_name" property="studentName" />
+        <result column="course_name" property="courseName" />
+        <result column="teacher_name" property="teacherName" />
+        <result column="score" property="score" />
+        <result column="grade_point" property="gradePoint" />
+        <result column="letter_grade" property="letterGrade" />
+        <result column="semester" property="semester" />
+        <result column="academic_year" property="academicYear" />
+        <result column="grading_status" property="gradingStatus" />
+        <result column="comments" property="comments" />
+        <result column="is_final" property="isFinal" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        
+        <association property="student" javaType="com.grade.management.entity.Student">
+            <id column="s_id" property="id" />
+            <result column="user_name" property="userName" />
+            <result column="student_number" property="studentNumber" />
+            <result column="class_name" property="className" />
+            <result column="major" property="major" />
+            <result column="enrollment_year" property="enrollmentYear" />
+            <result column="gender" property="gender" />
+            <result column="email" property="email" />
+            <result column="phone" property="phone" />
+        </association>
+        
+        <association property="course" javaType="com.grade.management.entity.Course">
+            <id column="c_id" property="id" />
+            <result column="course_name" property="courseName" />
+            <result column="course_code" property="courseCode" />
+            <result column="credit" property="credit" />
+            <result column="teacher_name" property="teacherName" />
+            <result column="course_type" property="courseType" />
+            <result column="course_hours" property="courseHours" />
+            <result column="department" property="department" />
+            <result column="classroom" property="classroom" />
+        </association>
+    </resultMap>
+    
+    <select id="findByStudentName" resultMap="BaseResultMap">
+        SELECT g.*, 
+               s.id as s_id, s.user_name, s.student_number, s.class_name, s.major, s.email, s.phone,
+               c.id as c_id, c.course_name, c.course_code, c.credit, c.teacher_name, c.course_type, c.department
+        FROM grades g
+        LEFT JOIN students s ON g.student_name = s.user_name
+        LEFT JOIN courses c ON g.course_name = c.course_name
+        WHERE g.student_name = #{studentName}
+    </select>
+    
+    <select id="findByTeacherName" resultMap="BaseResultMap">
+        SELECT g.*, 
+               s.id as s_id, s.user_name, s.student_number, s.class_name, s.major, s.email, s.phone,
+               c.id as c_id, c.course_name, c.course_code, c.credit, c.teacher_name, c.course_type, c.department
+        FROM grades g
+        LEFT JOIN students s ON g.student_name = s.user_name
+        LEFT JOIN courses c ON g.course_name = c.course_name
+        WHERE g.teacher_name = #{teacherName}
+    </select>
+    
+    <select id="findByCourseName" resultMap="BaseResultMap">
+        SELECT g.*, 
+               s.id as s_id, s.user_name, s.student_number, s.class_name, s.major, s.email, s.phone,
+               c.id as c_id, c.course_name, c.course_code, c.credit, c.teacher_name, c.course_type, c.department
+        FROM grades g
+        LEFT JOIN students s ON g.student_name = s.user_name
+        LEFT JOIN courses c ON g.course_name = c.course_name
+        WHERE g.course_name = #{courseName}
+    </select>
+    
+    <select id="findAll" resultMap="BaseResultMap">
+        SELECT g.*, 
+               s.id as s_id, s.user_name, s.student_number, s.class_name, s.major, s.email, s.phone,
+               c.id as c_id, c.course_name, c.course_code, c.credit, c.teacher_name, c.course_type, c.department
+        FROM grades g
+        LEFT JOIN students s ON g.student_name = s.user_name
+        LEFT JOIN courses c ON g.course_name = c.course_name
+    </select>
+    
+    <select id="findById" resultMap="BaseResultMap">
+        SELECT g.*, 
+               s.id as s_id, s.user_name, s.student_number, s.class_name, s.major, s.email, s.phone,
+               c.id as c_id, c.course_name, c.course_code, c.credit, c.teacher_name, c.course_type, c.department
+        FROM grades g
+        LEFT JOIN students s ON g.student_name = s.user_name
+        LEFT JOIN courses c ON g.course_name = c.course_name
+        WHERE g.id = #{id}
+    </select>
+    
+    <select id="findByStudentCourseAndSemester" resultMap="BaseResultMap">
+        SELECT g.*, 
+               s.id as s_id, s.user_name, s.student_number, s.class_name, s.major, s.email, s.phone,
+               c.id as c_id, c.course_name, c.course_code, c.credit, c.teacher_name, c.course_type, c.department
+        FROM grades g
+        LEFT JOIN students s ON g.student_name = s.user_name
+        LEFT JOIN courses c ON g.course_name = c.course_name
+        WHERE g.student_name = #{studentName} AND g.course_name = #{courseName} AND g.semester = #{semester} AND g.academic_year = #{academicYear}
+    </select>
+    
+    <insert id="insert" parameterType="com.grade.management.entity.Grade" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO grades (student_name, course_name, teacher_name, score, grade_point, letter_grade, semester, academic_year, grading_status, comments, is_final)
+        VALUES (#{studentName}, #{courseName}, #{teacherName}, #{score}, #{gradePoint}, #{letterGrade}, #{semester}, #{academicYear}, #{gradingStatus}, #{comments}, #{isFinal})
+    </insert>
+    
+    <update id="update" parameterType="com.grade.management.entity.Grade">
+        UPDATE grades 
+        SET student_name = #{studentName}, 
+            course_name = #{courseName}, 
+            teacher_name = #{teacherName}, 
+            score = #{score}, 
+            grade_point = #{gradePoint}, 
+            letter_grade = #{letterGrade}, 
+            semester = #{semester}, 
+            academic_year = #{academicYear}, 
+            grading_status = #{gradingStatus}, 
+            comments = #{comments}, 
+            is_final = #{isFinal}, 
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM grades WHERE id = #{id}
+    </delete>
+    
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO grades (student_name, course_name, teacher_name, score, grade_point, letter_grade, semester, academic_year, grading_status, comments, is_final)
+        VALUES 
+        <foreach collection="grades" item="grade" separator=",">
+            (#{grade.studentName}, #{grade.courseName}, #{grade.teacherName}, #{grade.score}, #{grade.gradePoint}, #{grade.letterGrade}, #{grade.semester}, #{grade.academicYear}, #{grade.gradingStatus}, #{grade.comments}, #{grade.isFinal})
+        </foreach>
+    </insert>
+</mapper>

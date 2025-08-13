@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grade.management.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.grade.management.entity.User">
+        <id column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="real_name" property="realName" />
+        <result column="role" property="role" />
+        <result column="student_id" property="studentId" />
+        <result column="email" property="email" />
+        <result column="phone" property="phone" />
+        <result column="class_name" property="className" />
+        <result column="major" property="major" />
+        <result column="enrollment_year" property="enrollmentYear" />
+        <result column="gender" property="gender" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="is_active" property="isActive" />
+        <result column="is_email_verified" property="isEmailVerified" />
+        <result column="email_verification_token" property="emailVerificationToken" />
+        <result column="email_verification_expires" property="emailVerificationExpires" />
+        <result column="last_login_at" property="lastLoginAt" />
+        <result column="avatar_url" property="avatarUrl" />
+        <result column="department" property="department" />
+        <result column="address" property="address" />
+        <result column="notes" property="notes" />
+    </resultMap>
+    
+    <select id="findByUsername" resultMap="BaseResultMap">
+        SELECT * FROM users WHERE username = #{username}
+    </select>
+    
+    <select id="findByEmail" resultMap="BaseResultMap">
+        SELECT * FROM users WHERE email = #{email}
+    </select>
+    
+    <select id="findByVerificationToken" resultMap="BaseResultMap">
+        SELECT * FROM users WHERE email_verification_token = #{token}
+    </select>
+    
+    <select id="findById" resultMap="BaseResultMap">
+        SELECT * FROM users WHERE id = #{id}
+    </select>
+    
+    <select id="findAll" resultMap="BaseResultMap">
+        SELECT * FROM users ORDER BY created_at DESC
+    </select>
+    
+    <insert id="insert" parameterType="com.grade.management.entity.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (username, password, real_name, role, student_id, email, phone, class_name, major, enrollment_year, gender, is_active, is_email_verified, email_verification_token, email_verification_expires, last_login_at, avatar_url, department, address, notes)
+        VALUES (#{username}, #{password}, #{realName}, #{role}, #{studentId}, #{email}, #{phone}, #{className}, #{major}, #{enrollmentYear}, #{gender}, #{isActive}, #{isEmailVerified}, #{emailVerificationToken}, #{emailVerificationExpires}, #{lastLoginAt}, #{avatarUrl}, #{department}, #{address}, #{notes})
+    </insert>
+    
+    <update id="update" parameterType="com.grade.management.entity.User">
+        UPDATE users 
+        SET username = #{username}, 
+            password = #{password}, 
+            real_name = #{realName}, 
+            role = #{role}, 
+            student_id = #{studentId}, 
+            email = #{email}, 
+            phone = #{phone},
+            class_name = #{className},
+            major = #{major},
+            enrollment_year = #{enrollmentYear},
+            gender = #{gender},
+            is_active = #{isActive},
+            is_email_verified = #{isEmailVerified},
+            email_verification_token = #{emailVerificationToken},
+            email_verification_expires = #{emailVerificationExpires},
+            last_login_at = #{lastLoginAt},
+            avatar_url = #{avatarUrl},
+            department = #{department},
+            address = #{address},
+            notes = #{notes},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+</mapper>

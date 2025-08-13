@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/grade_management?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    username: root
+    password: 777444
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+# Resend Email Configuration
+resend:
+  api-key: re_GhK6N4YK_AjQoi7J2ZnBC1g5Pfm72sKWd
+  from-email: kaoshi <noreply@200574.xyz>
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.grade.management.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+jwt:
+  secret: gradeManagementSecretKey2023ForSecureJWTTokenGeneration
+  expiration: 86400000
+
+app:
+  base-url: http://192.168.68.159:8080
