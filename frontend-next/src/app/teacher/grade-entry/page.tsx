@@ -107,7 +107,7 @@ export default function TeacherGradeEntryPage() {
           const gradeMap: { [key: string]: number } = {}
           gradesResponse.data.forEach(grade => {
             // 通过studentName找到对应的学生ID
-            const student = studentsResponse.data.find(s => 
+            const student = studentsResponse.data?.find(s => 
               (s.realName && s.realName === grade.studentName) || 
               (s.userName && s.userName === grade.studentName)
             )

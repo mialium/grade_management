@@ -11,7 +11,7 @@ import { FadeIn } from '@/components/motion'
 export default function VerifyEmailPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [message, setMessage] = useState('')
-  const [searchParams] = useSearchParams()
+  const searchParams = useSearchParams()
   const router = useRouter()
   const token = searchParams.get('token')
 
