@@ -24,6 +24,22 @@ mybatis:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.grade.management: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.mybatis: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/grade-management.log
+    max-size: 10MB
+    max-history: 30
+
 jwt:
   secret: gradeManagementSecretKey2023ForSecureJWTTokenGeneration
   expiration: 86400000

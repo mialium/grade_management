@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
+import MainLayout from "@/components/layout/main-layout";
 import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -26,7 +27,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${notoSansSC.variable} font-sans`}>
         <AuthProvider>
           <Suspense fallback={<div>加载中...</div>}>
-            {children}
+            <MainLayout>{children}</MainLayout>
           </Suspense>
         </AuthProvider>
       </body>

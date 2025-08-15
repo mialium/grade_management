@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 
+@Slf4j
 @Component
 public class JwtFilter extends OncePerRequestFilter {
     
@@ -26,9 +28,12 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         
-        // 跳过登录和注册接口的JWT验证
         String path = request.getServletPath();
+        log.debug("Processing request for path: {}", path);
+        
+        // 跳过登录和注册接口的JWT验证
         if (path.startsWith("/api/auth/")) {
+            log.debug("Skipping JWT validation for auth path: {}", path);
             chain.doFilter(request, response);
             return;
         }
@@ -40,11 +45,21 @@ public class JwtFilter extends OncePerRequestFilter {
         
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+            log.debug("JWT token found for path: {}", path);
+            try {
+                username = jwtUtil.extractUsername(jwt);
+                log.debug("Extracted username from JWT: {}", username);
+            } catch (Exception e) {
+                log.warn("Failed to extract username from JWT: {}", e.getMessage());
+            }
+        } else {
+            log.debug("No JWT token found for path: {}", path);
         }
         
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            log.debug("Validating JWT token for user: {}", username);
             if (jwtUtil.validateToken(jwt, username)) {
+                log.info("JWT token validated successfully for user: {}", username);
                 String role = jwtUtil.extractRole(jwt);
                 UsernamePasswordAuthenticationToken authenticationToken = 
                     new UsernamePasswordAuthenticationToken(

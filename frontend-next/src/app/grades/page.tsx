@@ -1,37 +1,36 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
 import { apiService } from '@/lib/api'
 import { Grade } from '@/types/api'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
-  faChartBar, 
   faBook, 
-  faTrophy,
+  faChartBar, 
   faSpinner,
   faExclamationTriangle,
-  faGraduationCap
+  faCalendarAlt,
+  faGraduationCap,
+  faTrophy
 } from '@fortawesome/free-solid-svg-icons'
 
-export default function DashboardPage() {
+export default function GradesPage() {
   const [grades, setGrades] = useState<Grade[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   
   const { user } = useAuth()
-  const router = useRouter()
 
   useEffect(() => {
     if (!user) {
-      router.push('/login')
+      window.location.href = '/login'
       return
     }
 
     loadGrades()
-  }, [user, router])
+  }, [user])
 
   const loadGrades = async () => {
     if (!user) return
@@ -44,6 +43,7 @@ export default function DashboardPage() {
         setError(response.error || '加载成绩失败')
       }
     } catch (error) {
+      console.error('Load grades error:', error)
       setError('网络错误')
     } finally {
       setIsLoading(false)
@@ -62,6 +62,13 @@ export default function DashboardPage() {
     if (score >= 80) return '良好'
     if (score >= 60) return '及格'
     return '不及格'
+  }
+
+  const getScoreColor = (score: number) => {
+    if (score >= 90) return 'bg-green-100 text-green-800'
+    if (score >= 80) return 'bg-blue-100 text-blue-800'
+    if (score >= 60) return 'bg-yellow-100 text-yellow-800'
+    return 'bg-red-100 text-red-800'
   }
 
   const getStatistics = () => {
@@ -99,12 +106,8 @@ export default function DashboardPage() {
       {/* 页面标题 */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">学业概览</h1>
-          <p className="text-gray-600 mt-1">
-            {user?.role === 'STUDENT' ? '查看您的学习成绩和统计信息' : 
-             user?.role === 'TEACHER' ? '查看教学统计信息' : 
-             '系统数据概览'}
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900">我的成绩</h1>
+          <p className="text-gray-600 mt-1">查看您的所有课程成绩和统计信息</p>
         </div>
       </div>
 
@@ -181,9 +184,7 @@ export default function DashboardPage() {
                 <span>成绩详情</span>
               </CardTitle>
               <CardDescription className="mt-1">
-                {user?.role === 'STUDENT' ? '您的课程成绩和相关信息' : 
-                 user?.role === 'TEACHER' ? '教学成绩统计' : 
-                 '系统成绩数据'}
+                您的课程成绩和相关信息
               </CardDescription>
             </div>
           </div>
@@ -193,11 +194,7 @@ export default function DashboardPage() {
             <div className="text-center py-12">
               <FontAwesomeIcon icon={faGraduationCap} className="text-gray-300 text-5xl mb-4" />
               <p className="text-gray-500 text-lg font-medium">暂无成绩数据</p>
-              <p className="text-gray-400 text-sm mt-1">
-                {user?.role === 'STUDENT' ? '暂时没有您的成绩记录' : 
-                 user?.role === 'TEACHER' ? '暂时没有教学成绩记录' : 
-                 '系统中暂无成绩数据'}
-              </p>
+              <p className="text-gray-400 text-sm mt-1">暂时没有您的成绩记录</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -205,8 +202,6 @@ export default function DashboardPage() {
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">课程名称</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">课程代码</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">学分</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">成绩</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">等级</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">学期</th>
@@ -217,13 +212,7 @@ export default function DashboardPage() {
                   {grades.map((grade, index) => (
                     <tr key={`grade-${grade.id}-${index}`} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {grade.courseName || ''}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {grade.course?.courseCode || '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {grade.course?.credit ? grade.course.credit.toString() : '-'}
+                        {grade.courseName}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <span className={getScoreClass(Number(grade.score))}>
@@ -231,12 +220,7 @@ export default function DashboardPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          Number(grade.score) >= 90 ? 'bg-green-100 text-green-800' :
-                          Number(grade.score) >= 80 ? 'bg-blue-100 text-blue-800' :
-                          Number(grade.score) >= 60 ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getScoreColor(Number(grade.score))}`}>
                           {getScoreGrade(Number(grade.score))}
                         </span>
                       </td>

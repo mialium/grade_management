@@ -5,7 +5,9 @@ import com.resend.services.emails.model.SendEmailRequest;
 import com.resend.services.emails.model.SendEmailResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class EmailServiceImpl implements EmailService {
     
@@ -21,26 +23,28 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendVerificationEmail(String to, String token) {
         try {
-            Resend resend = new Resend("re_GhK6N4YK_AjQoi7J2ZnBC1g5Pfm72sKWd");
+            log.info("Sending verification email to: {}", to);
+            Resend resend = new Resend(resendApiKey);
             
+            String verificationUrl = baseUrl + "/api/auth/verify-email?token=" + token;
             SendEmailRequest sendEmailRequest = SendEmailRequest.builder()
-                    .from("kaoshi<noreply@200574.xyz>")
+                    .from(fromEmail)
                     .to(to)
                     .subject("成绩管理系统 - 邮箱验证")
                     .html("<p>尊敬的用户：</p>" +
                           "<p>请点击以下链接验证您的邮箱：</p>" +
-                          "<p><a href=\"" + baseUrl + "/api/auth/verify-email?token=" + token + "\">验证邮箱</a></p>" +
+                          "<p><a href=\"" + verificationUrl + "\">验证邮箱</a></p>" +
                           "<p>或者复制以下链接到浏览器：</p>" +
-                          "<p>" + baseUrl + "/api/auth/verify-email?token=" + token + "</p>" +
+                          "<p>" + verificationUrl + "</p>" +
                           "<p>此链接24小时内有效。</p>" +
                           "<p>如果您没有注册成绩管理系统，请忽略此邮件。</p>" +
                           "<p>成绩管理系统团队</p>")
                     .build();
             
             SendEmailResponse data = resend.emails().send(sendEmailRequest);
-            System.out.println("Verification email sent to: " + to + " - ID: " + data.getId());
+            log.info("Verification email sent successfully to: {} - ID: {}", to, data.getId());
         } catch (Exception e) {
-            System.out.println("Failed to send verification email to: " + to + " - Error: " + e.getMessage());
+            log.error("Failed to send verification email to: {} - Error: {}", to, e.getMessage(), e);
             // 不抛出异常，允许注册流程继续
         }
     }

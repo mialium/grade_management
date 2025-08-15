@@ -7,11 +7,13 @@ import com.grade.management.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -25,26 +27,33 @@ public class AdminController {
     // 用户管理API
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers() {
+        log.info("Admin request: get all users");
         List<User> users = userService.findAll();
+        log.debug("Retrieved {} users", users.size());
         return ResponseEntity.ok(users);
     }
     
     @PostMapping("/users")
     public ResponseEntity<?> createUser(@RequestBody User user) {
+        log.info("Admin request: create user - {}", user.getUsername());
         if (userService.findByUsername(user.getUsername()) != null) {
+            log.warn("Admin create user failed: username already exists - {}", user.getUsername());
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", "用户名已存在");
             return ResponseEntity.badRequest().body(errorResponse);
         }
         
         User createdUser = userService.register(user);
+        log.info("Admin created user successfully: {}", createdUser.getUsername());
         return ResponseEntity.ok(createdUser);
     }
     
     @PutMapping("/users/{userId}/status")
     public ResponseEntity<?> updateUserStatus(@PathVariable Long userId, @RequestBody Map<String, Boolean> request) {
+        log.info("Admin request: update user status - userId: {}, active: {}", userId, request.get("active"));
         User user = userService.findById(userId);
         if (user == null) {
+            log.warn("Admin update user status failed: user not found - userId: {}", userId);
             return ResponseEntity.notFound().build();
         }
         

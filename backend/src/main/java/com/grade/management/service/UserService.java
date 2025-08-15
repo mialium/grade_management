@@ -5,10 +5,12 @@ import com.grade.management.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Date;
 
+@Slf4j
 @Service
 public class UserService {
     
@@ -19,29 +21,36 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     
     public User findByUsername(String username) {
+        log.debug("Finding user by username: {}", username);
         return userMapper.findByUsername(username);
     }
     
     public User findByEmail(String email) {
+        log.debug("Finding user by email: {}", email);
         return userMapper.findByEmail(email);
     }
     
     public User findByVerificationToken(String token) {
+        log.debug("Finding user by verification token: {}", token);
         return userMapper.findByVerificationToken(token);
     }
     
     public User findById(Long id) {
+        log.debug("Finding user by id: {}", id);
         return userMapper.findById(id);
     }
     
     public List<User> findAll() {
+        log.debug("Finding all users");
         return userMapper.findAll();
     }
     
     public User register(User user) {
+        log.info("Registering new user: {}", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setIsActive(true);
         userMapper.insert(user);
+        log.info("User registered successfully: {}", user.getUsername());
         return user;
     }
     

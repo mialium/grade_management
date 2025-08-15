@@ -72,11 +72,29 @@ npm start
 
 ## 环境变量
 
+项目使用环境变量管理 API 配置：
+
+### 开发环境
 创建 `.env.local` 文件：
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8080/api
 ```
+
+### 生产环境
+创建 `.env.production` 文件：
+
+```env
+NEXT_PUBLIC_API_URL=https://your-production-domain.com/api
+```
+
+## API 配置最佳实践
+
+- 使用统一的 `apiService` 进行所有 API 调用
+- 通过 `NEXT_PUBLIC_API_URL` 环境变量管理 API 基础 URL
+- 统一的错误处理和响应格式
+- 自动处理认证 token 和请求头
+- 支持开发/生产环境的不同配置
 
 ## 主要页面
 

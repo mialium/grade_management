@@ -20,8 +20,8 @@ class ApiService {
     }
   }
 
-  async handleApiCall<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
-    try {
+  private async handleApiCall<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+    try{
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,
         headers: {
@@ -78,6 +78,18 @@ class ApiService {
     return this.handleApiCall<LoginResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials)
+    })
+  }
+
+  async register(userData: {
+    username: string;
+    email: string;
+    realName: string;
+    password: string;
+  }): Promise<ApiResponse<any>> {
+    return this.handleApiCall<any>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(userData)
     })
   }
 

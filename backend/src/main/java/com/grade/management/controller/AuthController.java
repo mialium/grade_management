@@ -4,6 +4,7 @@ import com.grade.management.entity.User;
 import com.grade.management.service.UserService;
 import com.grade.management.service.EmailService;
 import com.grade.management.util.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.Date;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -33,11 +35,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
-            System.out.println("Login attempt for username: " + loginRequest.getUsername());
-            System.out.println("Raw request body: " + loginRequest);
-            System.out.println("Username: " + loginRequest.getUsername());
-            System.out.println("Password: " + loginRequest.getPassword());
-            
+            log.info("Login attempt for username: {}", loginRequest.getUsername());
+            log.info("Password: {}", loginRequest.getPassword());
+
             if (loginRequest.getUsername() == null || loginRequest.getUsername().trim().isEmpty()) {
                 Map<String, String> error = new HashMap<>();
                 error.put("message", "用户名不能为空");
@@ -168,6 +168,7 @@ public class AuthController {
             response.put("userId", registeredUser.getId());
             response.put("email", registeredUser.getEmail());
             
+            log.info("User registered successfully: {}", registerRequest.getUsername());
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
@@ -208,6 +209,7 @@ public class AuthController {
             response.put("message", "邮箱验证成功，现在可以登录了");
             response.put("username", user.getUsername());
             
+            log.info("Email verification successful for user: {}", user.getUsername());
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {

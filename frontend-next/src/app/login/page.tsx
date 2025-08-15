@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
+import { apiService } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -82,22 +83,14 @@ export default function LoginPage() {
         return
       }
 
-      const response = await fetch('http://localhost:8080/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          realName: formData.realName,
-          password: formData.password
-        }),
+      const result = await apiService.register({
+        username: formData.username,
+        email: formData.email,
+        realName: formData.realName,
+        password: formData.password
       })
 
-      const data = await response.json()
-
-      if (response.ok) {
+      if (result.success) {
         setSuccess('注册成功！请查收邮件进行验证。')
         setFormData({
           username: '',
@@ -112,7 +105,7 @@ export default function LoginPage() {
           setSuccess('')
         }, 3000)
       } else {
-        setError(data.message || '注册失败')
+        setError(result.error || '注册失败')
       }
     } catch (error) {
       setError('网络错误，请稍后重试')
