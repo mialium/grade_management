@@ -20,7 +20,7 @@ class ApiService {
     }
   }
 
-  private async handleApiCall<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+  async handleApiCall<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
     try{
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,
