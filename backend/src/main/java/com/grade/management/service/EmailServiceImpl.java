@@ -17,8 +17,8 @@ public class EmailServiceImpl implements EmailService {
     @Value("${resend.from-email}")
     private String fromEmail;
     
-    @Value("${app.base-url:http://localhost:8080}")
-    private String baseUrl;
+    @Value("${app.frontend-url:http://localhost:3000}")
+    private String frontendUrl;
     
     @Override
     public void sendVerificationEmail(String to, String token) {
@@ -26,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
             log.info("Sending verification email to: {}", to);
             Resend resend = new Resend(resendApiKey);
             
-            String verificationUrl = baseUrl + "/api/auth/verify-email?token=" + token;
+            String verificationUrl = frontendUrl + "/verify-email?token=" + token;
             SendEmailRequest sendEmailRequest = SendEmailRequest.builder()
                     .from(fromEmail)
                     .to(to)

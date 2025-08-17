@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle, faTimesCircle, faSpinner, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { FadeIn } from '@/components/motion'
+import { apiService } from '@/lib/api'
 
 export default function VerifyEmailPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
@@ -24,15 +25,14 @@ export default function VerifyEmailPage() {
       }
 
       try {
-        const response = await fetch(`https://grade.200574.xyz/api/auth/verify-email?token=${token}`)
-        const data = await response.json()
+        const response = await apiService.verifyEmail(token)
 
-        if (response.ok) {
+        if (response.success) {
           setStatus('success')
-          setMessage(data.message || '邮箱验证成功！')
+          setMessage(response.data?.message || '邮箱验证成功！')
         } else {
           setStatus('error')
-          setMessage(data.message || '验证失败')
+          setMessage(response.error || '验证失败')
         }
       } catch (error) {
         setStatus('error')

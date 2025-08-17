@@ -52,6 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         config.setAllowedOrigins(Arrays.asList("http://localhost:3000",
                 "http://127.0.0.1:3000",
                 "http://192.168.68.159:3000",
+                "http://172.31.48.1:3000",
                 "https://grade.200574.xyz",
                 "http://169.254.3.14:3000/",
                 "https://mialiu.serveo.net"));

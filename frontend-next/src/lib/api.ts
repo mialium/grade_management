@@ -232,6 +232,12 @@ class ApiService {
       method: 'DELETE'
     })
   }
+
+  async verifyEmail(token: string): Promise<ApiResponse<any>> {
+    return this.handleApiCall<any>(`/auth/verify-email?token=${token}`, {
+      method: 'GET'
+    })
+  }
 }
 
 export const apiService = new ApiService()

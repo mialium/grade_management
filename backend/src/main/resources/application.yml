@@ -45,4 +45,5 @@ jwt:
   expiration: 86400000
 
 app:
-  base-url: https://grade.200574.xyz
+  frontend-url: https://grade.200574.xyz
+  api-url: https://grade.200574.xyz/api
