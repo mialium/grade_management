@@ -173,7 +173,6 @@ public class AuthController {
             
         } catch (Exception e) {
             System.out.println("Registration error: " + e.getMessage());
-            e.printStackTrace();
             Map<String, String> error = new HashMap<>();
             error.put("message", "注册失败: " + e.getMessage());
             return ResponseEntity.badRequest().body(error);
